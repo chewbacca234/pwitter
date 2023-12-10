@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './';
 
-export const CustomProvider = ({ children }) => {
+export const ReduxProvider = ({ children }) => {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>{children}</PersistGate>

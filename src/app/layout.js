@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { CustomProvider } from '@/redux';
+import { ReduxProvider } from '@/redux';
+import { useFirebase, FirebaseContext } from '@/firebase';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -10,10 +11,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const firebase = useFirebase();
+
   return (
     <html lang="fr">
       <body className={inter.className}>
-        <CustomProvider>{children}</CustomProvider>
+        <FirebaseContext.Provider value={firebase}>
+          <ReduxProvider>{children}</ReduxProvider>
+        </FirebaseContext.Provider>
       </body>
     </html>
   );

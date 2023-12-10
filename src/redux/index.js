@@ -1,6 +1,6 @@
 export { store, persistor } from './persistStore';
 
-export { CustomProvider } from './provider';
+export { ReduxProvider } from './provider';
 
 export { default as userReducer, login, logout } from './reducers/user';
 
