@@ -1,62 +1,49 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../reducers/user';
-import { loadTweets, addTweet } from '../reducers/tweets';
+'use client';
+import { useEffect, useState, useContext } from 'react';
+import { useRouter } from 'next/navigation';
+import { FirebaseContext } from '@/firebase';
 import Link from 'next/link';
 import Image from 'next/image';
-import LastTweets from './LastTweets';
-import Trends from './Trends';
-import styles from '../styles/Home.module.css';
+import { Pweet } from '@/components';
+// import Trends from './Trends';
+import styles from './page.module.css';
 
-export default function Home() {
-  const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
+function Home() {
+  const router = useRouter();
+  const { user, pweets, addPweet, logout } = useContext(FirebaseContext);
+  const [newPweet, setNewPweet] = useState('');
+
+  console.log('[HOME] user', user);
 
   // Redirect to /login if not logged in
-  const router = useRouter();
-
-  if (!user.token) {
-    router.push('/login');
-  }
-
-  const [newTweet, setNewTweet] = useState('');
-
   useEffect(() => {
-    if (!user.token) {
-      return;
-    }
+    if (!user.uid) router.push('/login');
+  }, [user]);
 
-    fetch(`http://localhost:3000/tweets/all/${user.token}`)
-      .then(response => response.json())
-      .then(data => {
-        data.result && dispatch(loadTweets(data.tweets));
-      });
-  }, []);
+  console.log('pweets', pweets);
+  const lastPweets = pweets.map(pweet => {
+    return (
+      <Pweet
+        key={pweet.id}
+        pweet={pweet}
+        isOwnMessage={pweet.user.uid === user.uid}
+      />
+    );
+  });
 
   const handleInputChange = e => {
     if (
-      newTweet.length < 280 ||
+      newPweet.length < 280 ||
       e.nativeEvent.inputType === 'deleteContentBackward'
     ) {
-      setNewTweet(e.target.value);
+      setNewPweet(e.target.value);
     }
   };
 
-  const handleSubmit = () => {
-    fetch('http://localhost:3000/tweets', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: user.token, content: newTweet }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.result) {
-          const createdTweet = { ...data.tweet, author: user };
-          dispatch(addTweet(createdTweet));
-          setNewTweet('');
-        }
-      });
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const res = await addPweet(newPweet);
+    if (res) setNewPweet('');
   };
 
   return (
@@ -65,7 +52,7 @@ export default function Home() {
         <div>
           <Link href="/">
             <Image
-              src="/logo.png"
+              src="/images/logo_pwitter_50_50.png"
               alt="Logo"
               width={50}
               height={50}
@@ -77,54 +64,57 @@ export default function Home() {
           <div className={styles.userSection}>
             <div>
               <Image
-                src="/avatar.png"
+                src={user.photoURL}
                 alt="Avatar"
                 width={46}
                 height={46}
                 className={styles.avatar}
               />
             </div>
-            <div className={styles.userInfo}>
-              <p className={styles.name}>{user.firstName}</p>
-              <p className={styles.username}>@{user.username}</p>
-            </div>
+            {user ? (
+              <div className={styles.userInfo}>
+                {/* <p className={styles.name}>{user.firstName}</p> */}
+                <p className={styles.username}>@{user.displayName}</p>
+              </div>
+            ) : null}
           </div>
           <button
             onClick={() => {
-              router.push('/login');
-              dispatch(logout());
+              logout();
             }}
             className={styles.logout}
           >
-            Logout
+            Déconnexion
           </button>
         </div>
       </div>
 
       <div className={styles.middleSection}>
-        <h2 className={styles.title}>Home</h2>
+        <h2 className={styles.title}>Acceuil</h2>
         <div className={styles.createSection}>
           <textarea
             type="text"
-            placeholder="What's up?"
+            placeholder="Quoi de neuf ?"
             className={styles.input}
-            onChange={e => handleInputChange(e)}
-            value={newTweet}
+            onChange={handleInputChange}
+            value={newPweet}
           />
-          <div className={styles.validateTweet}>
-            <p>{newTweet.length}/280</p>
-            <button className={styles.button} onClick={() => handleSubmit()}>
-              Tweet
+          <div className={styles.validatePweet}>
+            <p>{newPweet.length}/280</p>
+            <button className={styles.button} onClick={handleSubmit}>
+              Pweet
             </button>
           </div>
         </div>
-        <LastTweets />
+        {lastPweets}
       </div>
 
       <div className={styles.rightSection}>
-        <h2 className={styles.title}>Trends</h2>
-        <Trends />
+        <h2 className={styles.title}>Tendances</h2>
+        {/* <Trends /> */}
       </div>
     </div>
   );
 }
+
+export default Home;

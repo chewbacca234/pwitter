@@ -1,0 +1,58 @@
+@font-face {
+  font-family: 'Mont';
+  src: url('/fonts/Mont-Heavy.otf');
+}
+
+.logo {
+  cursor: pointer;
+}
+
+.container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  background-color: #15202b;
+}
+
+.leftSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/images/fond_pwitter.jpg');
+  background-size: cover;
+  width: 40vw;
+  padding: 3rem;
+}
+
+.rightSection {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 2rem;
+  width: 60vw;
+  background-color: #161d26;
+  color: white;
+}
+
+.title {
+  line-height: 1.15;
+  font-size: 4rem;
+}
+
+.btn {
+  width: 10rem;
+}
+
+.modalContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.modalTitle {
+  font-family: 'Mont';
+  font-size: 22px;
+  margin: 20px;
+}
