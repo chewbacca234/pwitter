@@ -17,19 +17,21 @@ function Home() {
 
   // Redirect to /login if not logged in
   useEffect(() => {
-    if (!user.uid) router.push('/login');
+    if (!user) router.push('/login');
   }, [user]);
 
   console.log('pweets', pweets);
-  const lastPweets = pweets.map(pweet => {
-    return (
-      <Pweet
-        key={pweet.id}
-        pweet={pweet}
-        isOwnMessage={pweet.user.uid === user.uid}
-      />
-    );
-  });
+  const lastPweets = pweets
+    .sort((a, b) => b.sentAt - a.sentAt)
+    .map(pweet => {
+      return (
+        <Pweet
+          key={pweet.id}
+          pweet={pweet}
+          isOwnMessage={pweet.user.uid === user.uid}
+        />
+      );
+    });
 
   const handleInputChange = e => {
     if (
@@ -64,7 +66,7 @@ function Home() {
           <div className={styles.userSection}>
             <div>
               <Image
-                src={user.photoURL}
+                src={user?.photoURL}
                 alt="Avatar"
                 width={46}
                 height={46}

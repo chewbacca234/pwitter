@@ -1,6 +1,15 @@
 import styles from './Pweet.module.css';
 
 export default function Pweet({ pweet, isOwnMessage }) {
+  const isToday = date => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
   return (
     <div
       className={`${styles.message} ${
@@ -17,11 +26,18 @@ export default function Pweet({ pweet, isOwnMessage }) {
           {pweet.user.displayName?.split(' ')[0] || ''}
         </p>
       </div>
-      <div>
+      <div className={styles.content}>
         <h6>{pweet.content}</h6>
-        <p>
-          {String(pweet?.sentAt.getHours())}h
-          {String(pweet?.sentAt.getMinutes()).padStart(2, 0)}
+        <p className={styles.time}>
+          {isToday(pweet?.sentAt)
+            ? `${String(pweet?.sentAt.getHours())}h
+          ${String(pweet?.sentAt.getMinutes()).padStart(2, 0)}`
+            : `Le ${String(pweet?.sentAt.getDate())}/${String(
+                pweet?.sentAt.getMonth()
+              )}/${String(pweet?.sentAt.getFullYear())} à ${String(
+                pweet?.sentAt.getDate()
+              )}h
+          ${String(pweet?.sentAt.getMinutes()).padStart(2, 0)}`}
         </p>
       </div>
     </div>
