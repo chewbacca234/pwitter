@@ -1,6 +1,12 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styles from './Pweet.module.css';
+import { FirebaseContext } from '@/firebase';
+import { useContext } from 'react';
 
-export default function Pweet({ pweet, isOwnMessage }) {
+export default function Pweet({ pweet, isOwnMessage, isLiked }) {
+  const { removePweet, addRemoveLike } = useContext(FirebaseContext);
+
   const isToday = date => {
     const today = new Date();
     return (
@@ -8,6 +14,28 @@ export default function Pweet({ pweet, isOwnMessage }) {
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
     );
+  };
+
+  let likeStyle = { color: 'fff' };
+  if (isLiked) likeStyle = { color: '#409bf1' };
+
+  const formattedContent = pweet.content.split(' ').map((word, i) => {
+    if (word.startsWith('#') && word.length > 1) {
+      return (
+        <span key={i} style={{ fontWeight: 'bold' }}>
+          <Link href={`/hashtag/${word.slice(1)}`}>{word}</Link>{' '}
+        </span>
+      );
+    }
+    return word + ' ';
+  });
+
+  const handleLike = async () => {
+    await addRemoveLike(pweet.id);
+  };
+
+  const handleDelete = async () => {
+    await removePweet(pweet.id);
   };
 
   return (
@@ -27,7 +55,7 @@ export default function Pweet({ pweet, isOwnMessage }) {
         </p>
       </div>
       <div className={styles.content}>
-        <h6>{pweet.content}</h6>
+        <h6>{formattedContent}</h6>
         <p className={styles.time}>
           {isToday(pweet?.sentAt)
             ? `${String(pweet?.sentAt.getHours())}h
@@ -39,6 +67,23 @@ export default function Pweet({ pweet, isOwnMessage }) {
               )}h
           ${String(pweet?.sentAt.getMinutes()).padStart(2, 0)}`}
         </p>
+      </div>
+      <div className={styles.iconsSection}>
+        <FontAwesomeIcon
+          icon={faThumbsUp}
+          onClick={handleLike}
+          className={styles.like}
+          style={likeStyle}
+        />
+        {/* <span style={likeStyle}>{props.likes.length}</span> */}
+
+        {isOwnMessage ? (
+          <FontAwesomeIcon
+            icon={faTrashCan}
+            onClick={handleDelete}
+            className={styles.delete}
+          />
+        ) : null}
       </div>
     </div>
   );

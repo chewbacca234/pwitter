@@ -64,3 +64,23 @@
 .time {
   align-self: flex-end;
 }
+
+.iconsSection {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left: 1rem;
+}
+
+.like :hover {
+  cursor: pointer;
+  color: #409bf1;
+  transform: scale(1.5) translate(-25%, -20%);
+  animation-duration: 500ms;
+}
+
+.delete :hover {
+  cursor: pointer;
+  color: #d50606;
+}

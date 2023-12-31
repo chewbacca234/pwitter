@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Pweet } from '@/components';
 // import Trends from './Trends';
 import styles from './page.module.css';
+const defaultAvatar = '/images/avatar.png';
 
 function Home() {
   const router = useRouter();
@@ -20,15 +21,17 @@ function Home() {
     if (!user) router.push('/login');
   }, [user]);
 
-  console.log('pweets', pweets);
+  console.log('[HOME] pweets', pweets);
   const lastPweets = pweets
-    .sort((a, b) => b.sentAt - a.sentAt)
+    // .sort((a, b) => b.sentAt - a.sentAt)
     .map(pweet => {
+      const isLiked = pweet.likes?.some(e => e === user?.uid);
       return (
         <Pweet
           key={pweet.id}
           pweet={pweet}
-          isOwnMessage={pweet.user.uid === user.uid}
+          isLiked={isLiked}
+          isOwnMessage={pweet.user.uid === user?.uid}
         />
       );
     });
@@ -66,7 +69,7 @@ function Home() {
           <div className={styles.userSection}>
             <div>
               <Image
-                src={user?.photoURL}
+                src={user?.photoURL || defaultAvatar}
                 alt="Avatar"
                 width={46}
                 height={46}

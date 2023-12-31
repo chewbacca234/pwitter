@@ -13,10 +13,17 @@ import {
 import {
   getFirestore,
   addDoc,
+  updateDoc,
+  deleteDoc,
   collection,
+  doc,
   query,
   onSnapshot,
   orderBy,
+  getDoc,
+  arrayUnion,
+  arrayRemove,
+  where,
 } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { firebaseConfig } from './config';
@@ -51,7 +58,7 @@ export const useFirebase = () => {
 
   useEffect(() => {
     if (db) {
-      const q = query(collection(db, 'pweets'), orderBy('sentAt'));
+      const q = query(collection(db, 'pweets'), orderBy('sentAt', 'desc'));
       const unsubscribe = onSnapshot(q, data => {
         const pweets = data.docs.map(doc => {
           const data = doc.data();
@@ -82,7 +89,6 @@ export const useFirebase = () => {
         // Signed up
         updateProfile(auth.currentUser, {
           displayName: username,
-          photoURL: '/images/avatar.png',
         });
         console.log('[FIREBASE] user signed up : ', userCredential.user);
       })
@@ -131,6 +137,48 @@ export const useFirebase = () => {
     return true;
   };
 
+  const removePweet = async pweetId => {
+    if (!pweetId || !user || !db) return false;
+
+    await deleteDoc(doc(db, 'pweets', pweetId));
+    return true;
+  };
+
+  const addRemoveLike = async pweetId => {
+    if (!pweetId || !user || !db) return false;
+
+    const pweetRef = doc(db, 'pweets', pweetId);
+    // console.log('[FIREBASE] pweetRef', pweetRef);
+
+    const pweetSnapshot = await getDoc(pweetRef);
+    // console.log('[FIREBASE] pweet snapshot', pweetSnapshot);
+
+    let pweetData;
+    if (pweetSnapshot.exists()) {
+      pweetData = pweetSnapshot.data();
+      console.log('[FIREBASE] pweet data:', pweetData);
+    } else {
+      console.log('[FIREBASE] Pweet not found');
+      return false;
+    }
+
+    const isLiked = pweetData.likes?.some(e => e === user.uid);
+    console.log('[FIREBASE] user already liked message ? ', isLiked);
+
+    if (isLiked) {
+      await updateDoc(pweetRef, {
+        likes: arrayRemove(user.uid),
+      });
+      console.log('[FIREBASE] like removed');
+    } else {
+      await updateDoc(pweetRef, {
+        likes: arrayUnion(user.uid),
+      });
+      console.log('[FIREBASE] like added');
+    }
+    return true;
+  };
+
   return {
     user,
     login,
@@ -138,6 +186,8 @@ export const useFirebase = () => {
     singinWithEmailAndPassword,
     logout,
     addPweet,
+    removePweet,
+    addRemoveLike,
     pweets,
   };
 };
