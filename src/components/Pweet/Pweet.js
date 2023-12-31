@@ -3,6 +3,7 @@ import { faTrashCan, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styles from './Pweet.module.css';
 import { FirebaseContext } from '@/firebase';
 import { useContext } from 'react';
+import Link from 'next/link';
 
 export default function Pweet({ pweet, isOwnMessage, isLiked }) {
   const { removePweet, addRemoveLike } = useContext(FirebaseContext);
@@ -23,7 +24,7 @@ export default function Pweet({ pweet, isOwnMessage, isLiked }) {
     if (word.startsWith('#') && word.length > 1) {
       return (
         <span key={i} style={{ fontWeight: 'bold' }}>
-          <Link href={`/hashtag/${word.slice(1)}`}>{word}</Link>{' '}
+          <Link href={`/hashtag/${word.slice(1)}`}>{word + ' '}</Link>
         </span>
       );
     }

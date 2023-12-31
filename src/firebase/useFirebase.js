@@ -23,6 +23,7 @@ import {
   getDoc,
   arrayUnion,
   arrayRemove,
+  getDocs,
   where,
 } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
@@ -38,9 +39,10 @@ export const useFirebase = () => {
   const [db, setDb] = useState(null);
   const [user, setUser] = useState(null);
   const [pweets, setPweets] = useState([]);
+  const [hashtags, setHashtags] = useState([]);
 
   useEffect(() => {
-    // connexion initiale a Firebase
+    // Initial connection to Firebase
     const app = initializeApp(firebaseConfig);
     setAuth(getAuth(app));
     setDb(getFirestore(app));
@@ -60,18 +62,30 @@ export const useFirebase = () => {
     if (db) {
       const q = query(collection(db, 'pweets'), orderBy('sentAt', 'desc'));
       const unsubscribe = onSnapshot(q, data => {
-        const pweets = data.docs.map(doc => {
-          const data = doc.data();
-          data.id = doc.id;
-          data.sentAt = data.sentAt.toDate();
-          return data;
+        const pweets = [];
+        const hashtags = [];
+
+        data.docs.map(doc => {
+          const pweetData = getPweetData(doc);
+          pweets.push(pweetData);
+          pweetData.hashtags ? hashtags.push(...pweetData.hashtags) : null;
+          return;
         });
+
         setPweets(pweets);
+        setHashtags(Array.from(new Set(hashtags.sort())));
       });
 
       return () => unsubscribe();
     }
   }, [db]);
+
+  function getPweetData(doc) {
+    const pweetData = doc.data();
+    pweetData.id = doc.id;
+    pweetData.sentAt = pweetData.sentAt.toDate();
+    return pweetData;
+  }
 
   const login = async provider => {
     try {
@@ -124,6 +138,14 @@ export const useFirebase = () => {
 
   const addPweet = async content => {
     if (!content || !user || !db) return false;
+
+    const hashtags = [];
+
+    const filteredHashtags = content
+      .split(' ')
+      .filter(word => word.startsWith('#') && word.length > 1);
+    hashtags.push(...filteredHashtags);
+
     const message = {
       content,
       sentAt: new Date(),
@@ -132,6 +154,7 @@ export const useFirebase = () => {
         photoURL: user.photoURL,
         displayName: user.displayName,
       },
+      hashtags,
     };
     await addDoc(collection(db, 'pweets'), message);
     return true;
@@ -179,6 +202,26 @@ export const useFirebase = () => {
     return true;
   };
 
+  const getAllHashtagMessages = async hashtag => {
+    const pweets = [];
+
+    const q = query(
+      collection(db, 'pweets'),
+      where('hashtags', 'array-contains', `#${hashtag}`)
+    );
+
+    const pweetsSnapshot = await getDocs(q);
+    pweetsSnapshot.forEach(doc => {
+      const pweetData = getPweetData(doc);
+      console.log("[FIREBASE] hashtag's pweet data", pweetData);
+      pweets.push(pweetData);
+      return;
+    });
+
+    console.log("[FIREBASE] hashtag's pweets", pweets);
+    return pweets.sort((a, b) => b.sentAt - a.sentAt);
+  };
+
   return {
     user,
     login,
@@ -189,5 +232,7 @@ export const useFirebase = () => {
     removePweet,
     addRemoveLike,
     pweets,
+    hashtags,
+    getAllHashtagMessages,
   };
 };

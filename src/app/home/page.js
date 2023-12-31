@@ -11,7 +11,8 @@ const defaultAvatar = '/images/avatar.png';
 
 function Home() {
   const router = useRouter();
-  const { user, pweets, addPweet, logout } = useContext(FirebaseContext);
+  const { user, pweets, hashtags, addPweet, logout, getAllHashtagMessages } =
+    useContext(FirebaseContext);
   const [newPweet, setNewPweet] = useState('');
 
   console.log('[HOME] user', user);
@@ -22,19 +23,27 @@ function Home() {
   }, [user]);
 
   console.log('[HOME] pweets', pweets);
-  const lastPweets = pweets
-    // .sort((a, b) => b.sentAt - a.sentAt)
-    .map(pweet => {
-      const isLiked = pweet.likes?.some(e => e === user?.uid);
-      return (
-        <Pweet
-          key={pweet.id}
-          pweet={pweet}
-          isLiked={isLiked}
-          isOwnMessage={pweet.user.uid === user?.uid}
-        />
-      );
-    });
+  const lastPweets = pweets.map(pweet => {
+    const isLiked = pweet.likes?.some(e => e === user?.uid);
+    return (
+      <Pweet
+        key={pweet.id}
+        pweet={pweet}
+        isLiked={isLiked}
+        isOwnMessage={pweet.user.uid === user?.uid}
+      />
+    );
+  });
+
+  const trends = hashtags.map(hashtag => {
+    return <p key={hashtag}>{hashtag}</p>;
+  });
+
+  // TO REMOVE : Test bdd messages from hashtag
+  const hashtagsMessages = (async () =>
+    await getAllHashtagMessages('bidule'))();
+
+  console.log('[HOME] test page hashtag', hashtagsMessages);
 
   const handleInputChange = e => {
     if (
@@ -116,7 +125,7 @@ function Home() {
 
       <div className={styles.rightSection}>
         <h2 className={styles.title}>Tendances</h2>
-        {/* <Trends /> */}
+        {trends}
       </div>
     </div>
   );
