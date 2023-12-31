@@ -33,12 +33,6 @@
   padding-left: 1rem;
   border: rgba(114, 131, 148, 0.455) solid;
   border-width: 0px 1px 0px 1px;
-  overflow: scroll;
-}
-
-.middleSection::-webkit-scrollbar {
-  background: transparent;
-  width: 0px;
 }
 
 .rightSection {
@@ -150,4 +144,13 @@
 
 .button:hover {
   background-color: #3384cf;
+}
+
+.scrollableSection {
+  overflow: scroll;
+}
+
+.scrollableSection::-webkit-scrollbar {
+  background: transparent;
+  width: 0px;
 }

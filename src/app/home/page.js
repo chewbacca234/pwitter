@@ -120,12 +120,12 @@ function Home() {
             </button>
           </div>
         </div>
-        {lastPweets}
+        <div className={styles.scrollableSection}>{lastPweets}</div>
       </div>
 
       <div className={styles.rightSection}>
         <h2 className={styles.title}>Tendances</h2>
-        {trends}
+        <div className={styles.scrollableSection}>{trends}</div>
       </div>
     </div>
   );
