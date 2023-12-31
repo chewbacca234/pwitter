@@ -39,7 +39,7 @@ export const useFirebase = () => {
   const [db, setDb] = useState(null);
   const [user, setUser] = useState(null);
   const [pweets, setPweets] = useState([]);
-  const [hashtags, setHashtags] = useState([]);
+  const [trends, setTrends] = useState([]);
 
   useEffect(() => {
     // Initial connection to Firebase
@@ -62,18 +62,30 @@ export const useFirebase = () => {
     if (db) {
       const q = query(collection(db, 'pweets'), orderBy('sentAt', 'desc'));
       const unsubscribe = onSnapshot(q, data => {
-        const pweets = [];
-        const hashtags = [];
+        const dbPweets = [];
+        const dbHashtags = [];
+        const dbTrends = [];
 
         data.docs.map(doc => {
           const pweetData = getPweetData(doc);
-          pweets.push(pweetData);
-          pweetData.hashtags ? hashtags.push(...pweetData.hashtags) : null;
+          dbPweets.push(pweetData);
+          pweetData.hashtags ? dbHashtags.push(...pweetData.hashtags) : null;
           return;
         });
 
-        setPweets(pweets);
-        setHashtags(Array.from(new Set(hashtags.sort())));
+        dbHashtags.forEach(hashtag => {
+          const trendIndex = dbTrends.findIndex(
+            trend => trend.hashtag === hashtag
+          );
+          if (trendIndex === -1) {
+            dbTrends.push({ hashtag, count: 1 });
+          } else {
+            dbTrends[trendIndex].count++;
+          }
+        });
+
+        setPweets(dbPweets);
+        setTrends(dbTrends.sort((a, b) => b.count - a.count));
       });
 
       return () => unsubscribe();
@@ -232,7 +244,7 @@ export const useFirebase = () => {
     removePweet,
     addRemoveLike,
     pweets,
-    hashtags,
+    trends,
     getAllHashtagMessages,
   };
 };

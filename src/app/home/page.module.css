@@ -154,3 +154,25 @@
   background: transparent;
   width: 0px;
 }
+
+.tweetContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px 0 16px;
+  cursor: pointer;
+  border-radius: 24px;
+}
+
+.tweetContainer:hover {
+  background-color: #273443;
+}
+
+.hashtag {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.nbrTweet {
+  color: rgb(114, 131, 148);
+  font-size: 12px;
+}

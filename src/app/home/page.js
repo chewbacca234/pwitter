@@ -5,13 +5,12 @@ import { FirebaseContext } from '@/firebase';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Pweet } from '@/components';
-// import Trends from './Trends';
 import styles from './page.module.css';
 const defaultAvatar = '/images/avatar.png';
 
 function Home() {
   const router = useRouter();
-  const { user, pweets, hashtags, addPweet, logout, getAllHashtagMessages } =
+  const { user, pweets, trends, addPweet, logout, getAllHashtagMessages } =
     useContext(FirebaseContext);
   const [newPweet, setNewPweet] = useState('');
 
@@ -35,8 +34,18 @@ function Home() {
     );
   });
 
-  const trends = hashtags.map(hashtag => {
-    return <p key={hashtag}>{hashtag}</p>;
+  const trendsList = trends.map(trend => {
+    // return <p key={hashtag}>{hashtag}</p>;
+    return (
+      <Link key={trend.hashtag} href={`/hashtag/${trend.hashtag.slice(1)}`}>
+        <div className={styles.tweetContainer}>
+          <h3 className={styles.hashtag}>{trend.hashtag}</h3>
+          <h4 className={styles.nbrTweet}>
+            {trend.count} Tweet{trend.count > 1 && 's'}
+          </h4>
+        </div>
+      </Link>
+    );
   });
 
   // TO REMOVE : Test bdd messages from hashtag
@@ -125,7 +134,7 @@ function Home() {
 
       <div className={styles.rightSection}>
         <h2 className={styles.title}>Tendances</h2>
-        <div className={styles.scrollableSection}>{trends}</div>
+        <div className={styles.scrollableSection}>{trendsList}</div>
       </div>
     </div>
   );
