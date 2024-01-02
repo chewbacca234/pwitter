@@ -37,8 +37,12 @@ function Home() {
   const trendsList = trends.map(trend => {
     // return <p key={hashtag}>{hashtag}</p>;
     return (
-      <Link key={trend.hashtag} href={`/hashtag/${trend.hashtag.slice(1)}`}>
-        <div className={styles.tweetContainer}>
+      <Link
+        key={trend.hashtag}
+        href={`/hashtag/${trend.hashtag.slice(1)}`}
+        className={styles.link}
+      >
+        <div className={styles.trendsContainer}>
           <h3 className={styles.hashtag}>{trend.hashtag}</h3>
           <h4 className={styles.nbrTweet}>
             {trend.count} Tweet{trend.count > 1 && 's'}

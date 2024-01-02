@@ -4,6 +4,7 @@ import styles from './Pweet.module.css';
 import { FirebaseContext } from '@/firebase';
 import { useContext } from 'react';
 import Link from 'next/link';
+import { Alert, Popconfirm } from 'antd';
 
 export default function Pweet({ pweet, isOwnMessage, isLiked }) {
   const { removePweet, addRemoveLike } = useContext(FirebaseContext);
@@ -64,26 +65,34 @@ export default function Pweet({ pweet, isOwnMessage, isLiked }) {
             : `Le ${String(pweet?.sentAt.getDate())}/${String(
                 pweet?.sentAt.getMonth()
               )}/${String(pweet?.sentAt.getFullYear())} à ${String(
-                pweet?.sentAt.getDate()
+                pweet?.sentAt.getHours()
               )}h
           ${String(pweet?.sentAt.getMinutes()).padStart(2, 0)}`}
         </p>
       </div>
       <div className={styles.iconsSection}>
-        <FontAwesomeIcon
-          icon={faThumbsUp}
-          onClick={handleLike}
-          className={styles.like}
-          style={likeStyle}
-        />
+        <div className={styles.likeBtn}>
+          <FontAwesomeIcon
+            icon={faThumbsUp}
+            onClick={handleLike}
+            style={likeStyle}
+          />
+        </div>
         {/* <span style={likeStyle}>{props.likes.length}</span> */}
 
         {isOwnMessage ? (
-          <FontAwesomeIcon
-            icon={faTrashCan}
-            onClick={handleDelete}
-            className={styles.delete}
-          />
+          <Popconfirm
+            title="Supprimer le message"
+            description="Etes-vous sûr de vouloir supprimer ce message ?"
+            onConfirm={handleDelete}
+            onCancel={e => console.log('[PWEET] user canceled delete message')}
+            okText="Oui"
+            cancelText="Non"
+          >
+            <div className={styles.deleteBtn}>
+              <FontAwesomeIcon icon={faTrashCan} />
+            </div>
+          </Popconfirm>
         ) : null}
       </div>
     </div>
