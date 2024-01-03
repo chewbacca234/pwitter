@@ -7,7 +7,7 @@ function Landing() {
   const router = useRouter();
   const { user } = useContext(FirebaseContext);
 
-  // Redirect to /login if not logged in
+  // Redirect to /login if not logged in & to /home if logged in
   useEffect(() => {
     user ? router.push('/home') : router.push('/login');
   }, [user]);

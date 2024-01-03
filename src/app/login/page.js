@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { FirebaseContext } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { Button, Modal } from 'antd';
@@ -8,10 +8,16 @@ import Image from 'next/image';
 import { SignIn, SignUp } from '@/components/Login';
 
 function Login() {
+  const router = useRouter();
   const { user, login } = useContext(FirebaseContext);
 
   const [signUpModalOpen, setSignUpModalOpen] = useState(false);
   const [signInModalOpen, setSignInModalOpen] = useState(false);
+
+  // Redirect to /home if logged in
+  useEffect(() => {
+    if (user) router.push('/home');
+  }, [user]);
 
   const showSignUpModal = () => {
     setSignUpModalOpen(true);
@@ -28,12 +34,6 @@ function Login() {
   const handleCancelSignIn = () => {
     setSignInModalOpen(false);
   };
-
-  // Redirect to /home if logged in
-  const router = useRouter();
-  if (user) {
-    router.push('/');
-  }
 
   return (
     <div className={styles.container}>

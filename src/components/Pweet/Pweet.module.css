@@ -58,6 +58,12 @@
   margin-block: 0;
 }
 
+.hashtag {
+  cursor: pointer;
+  font-weight: bold;
+  color: #158eff;
+}
+
 .time {
   align-self: flex-end;
 }

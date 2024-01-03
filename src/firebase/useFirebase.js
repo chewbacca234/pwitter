@@ -214,7 +214,9 @@ export const useFirebase = () => {
     return true;
   };
 
-  const getAllHashtagMessages = async hashtag => {
+  const getAllHashtagPweets = async hashtag => {
+    if (!hashtag || !user || !db) return false;
+
     const pweets = [];
 
     const q = query(
@@ -245,6 +247,6 @@ export const useFirebase = () => {
     addRemoveLike,
     pweets,
     trends,
-    getAllHashtagMessages,
+    getAllHashtagPweets,
   };
 };
