@@ -4,7 +4,6 @@ import styles from './login.module.css';
 import { useContext } from 'react';
 import { FirebaseContext } from '@/firebase';
 import { message } from 'antd';
-import { checkForm } from '@/utils';
 
 const fields = [
   {
