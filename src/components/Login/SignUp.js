@@ -3,6 +3,8 @@ import Image from 'next/image';
 import styles from './login.module.css';
 import { useContext } from 'react';
 import { FirebaseContext } from '@/firebase';
+import { message } from 'antd';
+import { checkForm } from '@/utils';
 
 const fields = [
   {
@@ -28,20 +30,37 @@ const fields = [
 
 export default function SignUp() {
   const { singupWithEmailAndPassword } = useContext(FirebaseContext);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const warning = content => {
+    messageApi.open({
+      type: 'warning',
+      content,
+    });
+  };
 
   const { formData, handleChange, handleSubmit } = useForm({
     onSubmit: e => {
       console.log('[SIGNUP] formdata', formData);
+
       if (formData.password !== formData.confirmPassword) {
-        // TODO Gestion de l'erreur de saisie
+        warning('ERREUR DE SAISIE : Les 2 mots de passe ne correspondent pas.');
         return;
       }
-      return singupWithEmailAndPassword(formData);
+
+      // TODO Handle firebase errors
+      try {
+        singupWithEmailAndPassword(formData);
+      } catch (error) {
+        console.log('[SIGNUP] firebase error : ', error);
+        alert(err.message);
+      }
     },
   });
 
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
+      {contextHolder}
       <Image
         src="/images/logo_pwitter_50_50.png"
         alt="Logo"

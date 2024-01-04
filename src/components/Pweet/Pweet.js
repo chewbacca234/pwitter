@@ -26,7 +26,7 @@ export default function Pweet({ pweet }) {
   let likeStyle = { color: 'fff' };
   if (isLiked) likeStyle = { color: '#409bf1' };
 
-  console.log('[PWEET] router pathname', pathname);
+  // console.log('[PWEET] router pathname', pathname);
   const formattedContent = pweet.content.split(' ').map((word, i) => {
     if (word.startsWith('#') && word.length > 1) {
       return (

@@ -85,7 +85,6 @@ function Home() {
             </div>
             {user ? (
               <div className={styles.userInfo}>
-                {/* <p className={styles.name}>{user.firstName}</p> */}
                 <p className={styles.username}>@{user.displayName}</p>
               </div>
             ) : null}
@@ -93,6 +92,7 @@ function Home() {
           <button
             onClick={() => {
               logout();
+              router.push('/login');
             }}
             className={styles.logout}
           >
@@ -106,6 +106,7 @@ function Home() {
         <div className={styles.createSection}>
           <textarea
             type="text"
+            name="newPweet"
             placeholder="Quoi de neuf ?"
             className={styles.input}
             onChange={handleInputChange}

@@ -24,7 +24,6 @@ p {
 h2,
 h3,
 p,
-/* span, */
 button {
   color: white;
 }
@@ -34,15 +33,8 @@ textarea {
   color: lightgray;
 }
 
-.ant-modal-header {
-  background-color: #15202b;
-  border-radius: 10px 10px 0px 0px;
-  border: none;
-}
-
-.ant-modal-content {
-  background-color: #15202b;
-  border-radius: 10px;
+.ant-modal-close-x {
+  color: #fff;
 }
 
 textarea::placeholder {

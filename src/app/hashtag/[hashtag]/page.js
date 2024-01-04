@@ -92,6 +92,7 @@ export default function Hashtag({ params }) {
           <button
             onClick={() => {
               logout();
+              router.push('/login');
             }}
             className={styles.button}
           >

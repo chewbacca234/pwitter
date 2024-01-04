@@ -103,7 +103,8 @@ export const useFirebase = () => {
     try {
       return await signInWithPopup(auth, providers[provider.toLowerCase()]);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
+      alert(error.message);
     }
   };
 
@@ -117,6 +118,7 @@ export const useFirebase = () => {
           displayName: username,
         });
         console.log('[FIREBASE] user signed up : ', userCredential.user);
+        return true;
       })
       .catch(error => {
         const errorCode = error.code;
@@ -126,6 +128,7 @@ export const useFirebase = () => {
           `[FIREBASE] email & password signup error ${errorCode} : `,
           errorMessage
         );
+        alert(error.message);
       });
   };
 
@@ -144,6 +147,7 @@ export const useFirebase = () => {
           `[FIREBASE] email & password signin error ${errorCode} : `,
           errorMessage
         );
+        alert(error.message);
       });
 
   const logout = async () => await signOut(auth);
