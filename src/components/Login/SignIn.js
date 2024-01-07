@@ -6,8 +6,9 @@ import { FirebaseContext } from '@/firebase';
 
 const fields = [
   {
-    name: 'username',
-    placeholder: 'username',
+    name: 'email',
+    type: 'email',
+    placeholder: 'email',
   },
   {
     name: 'password',

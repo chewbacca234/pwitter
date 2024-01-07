@@ -5,6 +5,7 @@ import { FirebaseContext } from '@/firebase';
 import { useContext } from 'react';
 import { Popconfirm } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
+const defaultAvatar = '/images/avatar.png';
 
 export default function Pweet({ pweet }) {
   const router = useRouter();
@@ -62,7 +63,7 @@ export default function Pweet({ pweet }) {
     >
       <div className={styles.header}>
         <img
-          src={pweet?.user.photoURL}
+          src={pweet.user.photoURL || defaultAvatar }
           alt={pweet?.user.displayName}
           className={styles.avatar}
         />
