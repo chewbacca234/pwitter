@@ -59,7 +59,7 @@ export const useFirebase = () => {
   }, [auth]);
 
   useEffect(() => {
-    if (db) {
+    if (auth && db) {
       const q = query(collection(db, 'pweets'), orderBy('sentAt', 'desc'));
       const unsubscribe = onSnapshot(q, data => {
         const dbPweets = [];
@@ -90,7 +90,7 @@ export const useFirebase = () => {
 
       return () => unsubscribe();
     }
-  }, [db]);
+  }, [db, user]);
 
   function getPweetData(doc) {
     const pweetData = doc.data();
@@ -136,7 +136,7 @@ export const useFirebase = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
         // Signed in
-        setAuth({ ...auth, displayName });
+        // setAuth({ ...auth, displayName: userCredential.user.displayName });
         console.log('[FIREBASE] user signed in : ', userCredential.user);
       })
       .catch(error => {

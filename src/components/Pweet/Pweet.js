@@ -63,7 +63,7 @@ export default function Pweet({ pweet }) {
     >
       <div className={styles.header}>
         <img
-          src={pweet.user.photoURL || defaultAvatar }
+          src={pweet.user.photoURL || defaultAvatar}
           alt={pweet?.user.displayName}
           className={styles.avatar}
         />
@@ -81,8 +81,7 @@ export default function Pweet({ pweet }) {
                 pweet?.sentAt.getMonth()
               )}/${String(pweet?.sentAt.getFullYear())} à ${String(
                 pweet?.sentAt.getHours()
-              )}h
-          ${String(pweet?.sentAt.getMinutes()).padStart(2, 0)}`}
+              )}h${String(pweet?.sentAt.getMinutes()).padStart(2, 0)}`}
         </p>
       </div>
       <div className={styles.iconsSection}>

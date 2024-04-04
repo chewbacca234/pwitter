@@ -26,21 +26,23 @@ function Home() {
     return <Pweet key={pweet.id} pweet={pweet} />;
   });
 
-  const trendsList = trends.map(trend => {
-    return (
-      <div
-        key={trend.hashtag}
-        onClick={() => router.push(`/hashtag/${trend.hashtag.slice(1)}`)}
-        className={styles.link}
-      >
-        <div className={styles.trendsContainer}>
-          <h3 className={styles.hashtag}>{trend.hashtag}</h3>
-          <h4 className={styles.nbrTweet}>
-            {trend.count} Tweet{trend.count > 1 && 's'}
-          </h4>
+  const trendsList = trends.map((trend, i) => {
+    if (i < 10) {
+      return (
+        <div
+          key={trend.hashtag}
+          onClick={() => router.push(`/hashtag/${trend.hashtag.slice(1)}`)}
+          className={styles.link}
+        >
+          <div className={styles.trendsContainer}>
+            <h3 className={styles.hashtag}>{trend.hashtag}</h3>
+            <h4 className={styles.nbrTweet}>
+              {trend.count} Tweet{trend.count > 1 && 's'}
+            </h4>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   });
 
   const handleInputChange = e => {
