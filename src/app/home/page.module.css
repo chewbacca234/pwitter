@@ -200,6 +200,7 @@
     height: 10%;
     width: 100%;
     padding: 3%;
+    border-bottom: #95b0cf 1px solid;
   }
 
   .leftSection > :nth-child(2) {
@@ -218,6 +219,7 @@
     width: 100%;
     padding-right: 1rem;
     padding-left: 1rem;
+    padding-top: 1rem;
     border: rgba(114, 131, 148, 0.455) solid;
     border-width: 0px 1px 0px 1px;
   }
